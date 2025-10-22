@@ -5,6 +5,16 @@
   "repository": "https://github.com/yoshimitakuto/mcp-tutorial.git",
   "author": "YoshimiTakuto <takuto.yoshimi@ncdc.co.jp>",
   "license": "MIT",
+  "type": "module",
+  "bin": {
+    "mcp-tutorial": "./build/index.js"
+  },
+  "scripts": {
+    "build": "tsc && chmod 755 build/index.js"
+  },
+  "files": [
+    "build"
+  ],
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.20.1"
   },
