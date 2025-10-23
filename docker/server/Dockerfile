@@ -17,8 +17,5 @@ COPY tsconfig.json ./
 # TypeScriptをビルド
 RUN yarn run build
 
-# ポート3000を公開
-EXPOSE 3000
-
 # ビルドされたindex.jsを実行
 CMD ["node", "build/index.js"]
