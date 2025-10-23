@@ -1,10 +1,5 @@
 {
   "name": "mcp-tutorial",
-  "version": "1.0.0",
-  "main": "index.js",
-  "repository": "https://github.com/yoshimitakuto/mcp-tutorial.git",
-  "author": "YoshimiTakuto <takuto.yoshimi@ncdc.co.jp>",
-  "license": "MIT",
   "type": "module",
   "bin": {
     "mcp-tutorial": "./build/index.js"
@@ -21,6 +16,7 @@
   "devDependencies": {
     "@types/node": "^24.9.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "zod": "^4.1.12"
   }
 }
