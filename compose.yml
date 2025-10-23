@@ -1,10 +1,5 @@
 services:
-  mcp-server:
-    container_name: mcp-tutorial-server
+  mcp-tutorial-server:
     build:
       context: .
-      dockerfile: docker/server/Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - PORT=3000
+      dockerfile: docker/local-server/Dockerfile
