@@ -1,9 +1,10 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
+import express from "express";
 import { z } from "zod";
 
 const inputSchema = z.object({
@@ -86,5 +87,28 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 });
 
 // サーバーを起動
-const transport = new StdioServerTransport();
-await server.connect(transport);
+const app = express();
+app.use(express.json());
+
+app.post("/mcp", async (req, res) => {
+  const transport = new StreamableHTTPServerTransport({
+    sessionIdGenerator: undefined,
+    enableJsonResponse: true,
+  });
+
+  res.on("close", () => {
+    transport.close();
+  });
+
+  await server.connect(transport);
+  await transport.handleRequest(req, res, req.body);
+});
+
+const port = parseInt(process.env.PORT || "3000");
+app
+  .listen(port, () => {
+    console.log(`MCP server is running on http://localhost:${port}/mcp`);
+  })
+  .on("error", (err) => {
+    console.error("Failed to start server:", err);
+  });
