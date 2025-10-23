@@ -1,5 +1,13 @@
 services:
-  mcp-tutorial-server:
+  tutorial-mcp-local-server:
     build:
       context: .
       dockerfile: docker/local-server/Dockerfile
+  tutorial-mcp-remote-server:
+    build:
+      context: .
+      dockerfile: docker/remote-server/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000

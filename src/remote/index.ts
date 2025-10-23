@@ -1,11 +1,10 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-// import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-// import express from "express";
+import express from "express";
 import { z } from "zod";
 
 const inputSchema = z.object({
@@ -69,7 +68,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         content: [
           {
             type: "text",
-            text: `Hello, World! You said: ${args.say}`,
+            text: JSON.stringify({
+              message: `Hello, World! You said: ${args.say}`,
+            }),
           },
         ],
       };
@@ -78,7 +79,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         content: [
           {
             type: "text",
-            text: `Goodbye, World! You said: ${args.say}`,
+            text: JSON.stringify({
+              message: `Goodbye, World! You said: ${args.say}`,
+            }),
           },
         ],
       };
@@ -88,32 +91,28 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 });
 
 // サーバーを起動
-// const app = express();
-// app.use(express.json());
+const app = express();
+app.use(express.json());
 
-// app.post("/mcp", async (req, res) => {
-//   const transport = new StreamableHTTPServerTransport({
-//     sessionIdGenerator: undefined,
-//     enableJsonResponse: true,
-//   });
+app.post("/mcp", async (req, res) => {
+  const transport = new StreamableHTTPServerTransport({
+    sessionIdGenerator: undefined,
+    enableJsonResponse: true,
+  });
 
-//   res.on("close", () => {
-//     transport.close();
-//   });
+  res.on("close", () => {
+    transport.close();
+  });
 
-//   await server.connect(transport);
-//   await transport.handleRequest(req, res, req.body);
-// });
+  await server.connect(transport);
+  await transport.handleRequest(req, res, req.body);
+});
 
-// const port = parseInt(process.env.PORT || "3000");
-// app
-//   .listen(port, () => {
-//     console.log(`MCP server is running on http://localhost:${port}/mcp`);
-//   })
-//   .on("error", (err) => {
-//     console.error("Failed to start server:", err);
-//   });
-
-const transport = new StdioServerTransport();
-await server.connect(transport);
-console.log("MCP server is running over stdio");
+const port = parseInt(process.env.PORT || "3000");
+app
+  .listen(port, () => {
+    console.error(`MCP server is running on http://localhost:${port}/mcp`);
+  })
+  .on("error", (err) => {
+    console.error("Failed to start server:", err);
+  });

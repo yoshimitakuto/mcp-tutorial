@@ -8,14 +8,14 @@ COPY package.json ./
 # 依存関係をインストール
 RUN yarn install --frozen-lockfile
 
-# プロジェクトルートのsrcディレクトリ全体をコピー
-COPY src ./src
+# プロジェクトルートのsrc/remoteディレクトリ全体をコピー
+COPY src/remote ./src/remote
 
 # tsconfig.jsonもコピー（ビルドに必要）
 COPY tsconfig.json ./
 
 # TypeScriptをビルド
-RUN yarn run build
+RUN yarn run build:remote
 
 # ビルドされたindex.jsを実行
-CMD ["node", "build/index.js"]
+CMD ["node", "build/remote/index.js"]
